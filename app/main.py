@@ -1,9 +1,22 @@
-from typing import Union
+from fastapi import Depends, FastAPI, HTTPException
 
-from fastapi import FastAPI
+from .db import crud, models, schemas
+from .db.database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI()
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+db = next(get_db())
 
 @app.get("/")
 def read_root():
@@ -16,12 +29,18 @@ def health_check():
 
 
 @app.post("/login")
-def login(username: str, password: str):
-    return {"username": username}
+def login(email: str, password: str):
+    return {"email": email}
 
-@app.post("/signup")
-def signup(username: str, password: str):
-    return {"username": username}
+
+@app.post("/signup", response_model=schemas.User)
+def signup(email: str, password: str):
+    db_user = crud.get_user_by_email(db, email=email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="User already registered")
+    user = crud.create_user(db=db, user=schemas.UserCreate(email=email, password=password))
+    return user
+
 
 #Requesting to ping a user
 @app.post("/ping_request")
