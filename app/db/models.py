@@ -11,7 +11,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
 
-    pings_sent = relationship("Ping", back_populates="sender")
+    #pings_sent = relationship("Ping", back_populates="sender")
 
 
 class Ping(Base):
@@ -22,4 +22,4 @@ class Ping(Base):
     receiver_id = Column(Integer, ForeignKey("users.id"))
     timestamp = Column(DateTime)
 
-    sender = relationship("User", back_populates="pings_sent")
+    #sender = relationship("User", back_populates="pings_sent")

@@ -38,8 +38,8 @@ def signup(username: str, password: str):
     db_user = crud.get_user_by_username(db, username=username)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
-    user = schemas.UserCreate(email=username, password=password)
-    return crud.create_user(db=db, user=user)
+    user = crud.create_user(db=db, user=schemas.UserCreate(email=username, password=password))
+    return schemas.User(id=user.id, email=user.username)
 
 
 #Requesting to ping a user

@@ -27,9 +27,9 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    sender_id: int
-    receiver_id: int
-    sender: list[Ping] = []
+    #sender_id: int
+    #receiver_id: int
+    #sender: list[Ping] = []
 
     class Config:
         orm_mode = True
