@@ -29,17 +29,17 @@ def health_check():
 
 
 @app.post("/login")
-def login(username: str, password: str):
-    return {"username": username}
+def login(email: str, password: str):
+    return {"email": email}
 
 
 @app.post("/signup", response_model=schemas.User)
-def signup(username: str, password: str):
-    db_user = crud.get_user_by_username(db, username=username)
+def signup(email: str, password: str):
+    db_user = crud.get_user_by_email(db, email=email)
     if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    user = crud.create_user(db=db, user=schemas.UserCreate(email=username, password=password))
-    return schemas.User(id=user.id, email=user.username)
+        raise HTTPException(status_code=400, detail="User already registered")
+    user = crud.create_user(db=db, user=schemas.UserCreate(email=email, password=password))
+    return user
 
 
 #Requesting to ping a user
