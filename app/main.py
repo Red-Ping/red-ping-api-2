@@ -11,10 +11,34 @@ def read_root():
 
 
 @app.get("/health")
-def read_root():
+def health_check():
     return {"status": "healthy"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/login")
+def login(username: str, password: str):
+    return {"username": username}
+
+@app.post("/signup")
+def signup(username: str, password: str):
+    return {"username": username}
+
+#Requesting to ping a user
+@app.post("/ping_request")
+def post_ping_request():
+    return {"status": "healthy"}
+
+#Get the current ping requests
+@app.get("/ping_request")
+def get_ping_request():
+    return {"status": "healthy"}
+
+#Sends a ping to a user
+@app.post("/ping_send")
+def post_ping_send():
+    return {"status": "healthy"}
+
+#Get the current pings
+@app.get("/ping_send")
+def get_ping_send():
+    return {"status": "healthy"}
