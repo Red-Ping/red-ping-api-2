@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 
 from .db import crud, models, schemas
-from .database import SessionLocal, engine
+from .db.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
