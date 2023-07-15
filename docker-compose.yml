@@ -1,0 +1,5 @@
+services:
+  red-ping:
+    build: .
+    volumes:
+      - ./db:/db:rw
