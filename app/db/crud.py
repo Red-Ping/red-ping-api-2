@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from argon2 import PasswordHasher, exceptions
+from argon2 import PasswordHasher, check_needs_rehash, exceptions
 
 from . import models, schemas
 
@@ -7,6 +7,13 @@ ph = PasswordHasher()
 
 def get_user_by_email(db: Session, email: str) -> schemas.UserCreate:
     return db.query(models.User).filter(models.User.email == email).first()
+
+#Sets the password hash for a user
+def set_password_hash_for_user(db: Session, email: str,  password: str):
+    user = get_user_by_email(db, email)
+    user.hashed_password = ph.hash(password)
+    db.commit()
+    return user
 
 #Check username and password
 def authenticate_user(db: Session, email: str, password: str):
@@ -19,6 +26,8 @@ def authenticate_user(db: Session, email: str, password: str):
         ph.verify(user.hashed_password, password)
     except exceptions.InvalidHash:
         return False
+    if ph.check_needs_rehash(user.hashed_password):
+        set_password_hash_for_user(db, user.email, password)
     return user
 
 
