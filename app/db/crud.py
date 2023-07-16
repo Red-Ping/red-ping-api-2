@@ -1,24 +1,33 @@
 from sqlalchemy.orm import Session
-from argon2 import PasswordHasher
+from argon2 import PasswordHasher, exceptions
 
 from . import models, schemas
 
 ph = PasswordHasher()
 
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
-
-
-def get_user_by_email(db: Session, email: str):
+def get_user_by_email(db: Session, email: str) -> schemas.UserCreate:
     return db.query(models.User).filter(models.User.email == email).first()
+
+#Check username and password
+def authenticate_user(db: Session, email: str, password: str):
     
+    #Techincally this style of programming could leak the username via timing attacks
+    user = get_user_by_email(db, email=email)
+    if not user:
+        return False
+    try:
+        ph.verify(user.hashed_password, password)
+    except exceptions.InvalidHash:
+        return False
+    return user
+
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 #Creates a user hashing the function
-def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(email=user.email, hashed_password=ph.hash(user.password))
+def create_user(db: Session, email: str, password: str):
+    db_user = models.User(email=email, hashed_password=ph.hash(password))
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

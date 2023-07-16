@@ -30,16 +30,20 @@ def health_check():
 
 @app.post("/login")
 def login(email: str, password: str):
-    return {"email": email}
+    user = crud.authenticate_user(db, email, password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
+    #auth(user)
+    return {"cookie": "cookies need to be setup"}
 
-
-@app.post("/signup", response_model=schemas.User)
+@app.post("/signup")
 def signup(email: str, password: str):
-    db_user = crud.get_user_by_email(db, email=email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="User already registered")
-    user = crud.create_user(db=db, user=schemas.UserCreate(email=email, password=password))
-    return user
+    user = crud.get_user_by_email(db, email=email)
+    if user:
+        raise HTTPException(status_code=409, detail="User already registered")
+    user = crud.create_user(db, email, password)
+    #auth(user)
+    return {"cookie": "cookies need to be setup"}
 
 
 #Requesting to ping a user

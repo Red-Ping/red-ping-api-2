@@ -14,15 +14,16 @@ class Ping(PingBase):
     owner_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserBase(BaseModel):
     email: str
+    hashed_password: str
 
 
 class UserCreate(UserBase):
-    password: str
+    pass
 
 
 class User(UserBase):
@@ -32,4 +33,4 @@ class User(UserBase):
     #sender: list[Ping] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
