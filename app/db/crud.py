@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from argon2 import PasswordHasher, check_needs_rehash, exceptions
+from argon2 import PasswordHasher, exceptions
 
 from . import models, schemas
 
