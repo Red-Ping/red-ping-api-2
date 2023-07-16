@@ -3,3 +3,5 @@ services:
     build: .
     volumes:
       - ./db:/db:rw
+    ports:
+      - 8080:8080
