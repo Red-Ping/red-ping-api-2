@@ -177,4 +177,5 @@ pyrightconfig.json
 
 #This project specfic
 *.db*
+/db/
 .vscode/
