@@ -7,11 +7,11 @@ from .db.database import SessionLocal, engine
 
 from .auth.access import router as access_router
 
+
 models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
-
 app.include_router(access_router)
 
 
