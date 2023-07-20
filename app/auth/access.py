@@ -6,6 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from ..db import crud
+from ..db.schemas import User
 from ..db.database import SessionLocal
 
 from .schemas import TokenData
@@ -94,6 +95,6 @@ def signup(email: str, password: str):
 
 
 #This requires auth
-@router.get("/example_auth")
-def read_items(token: Annotated[str, Depends(verify_user)]):
-    return {"token": token}
+@router.get("/get_email")
+def read_items(user: Annotated[User, Depends(verify_user)]):
+    return {"email": user.email}
