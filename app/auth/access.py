@@ -91,6 +91,6 @@ def signup(email: str, password: str):
 
 
 #This requires auth
-@router.get("/testing_auth")
-def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
+@router.get("/example_auth")
+def read_items(token: Annotated[str, Depends(verify_user)]):
     return {"token": token}
