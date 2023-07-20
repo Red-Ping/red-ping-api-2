@@ -1,12 +1,19 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
+
+from typing import Annotated
 
 from .db import crud, models, schemas
 from .db.database import SessionLocal, engine
+
+from .auth.access import router as access_router
 
 models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
+
+app.include_router(access_router)
+
 
 # Dependency
 def get_db():
@@ -27,23 +34,6 @@ def read_root():
 def health_check():
     return {"status": "healthy"}
 
-
-@app.post("/login")
-def login(email: str, password: str):
-    user = crud.authenticate_user(db, email, password)
-    if not user:
-        raise HTTPException(status_code=401, detail="Incorrect email or password")
-    #auth(user)
-    return {"cookie": "cookies need to be setup"}
-
-@app.post("/signup")
-def signup(email: str, password: str):
-    user = crud.get_user_by_email(db, email=email)
-    if user:
-        raise HTTPException(status_code=409, detail="User already registered")
-    user = crud.create_user(db, email, password)
-    #auth(user)
-    return {"cookie": "cookies need to be setup"}
 
 
 #Requesting to ping a user
