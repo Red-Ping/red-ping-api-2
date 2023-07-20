@@ -73,9 +73,6 @@ def create_access_token(data: dict, expires_delta: timedelta):
 
 @router.post("/login")
 def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-
-    print(vars(crud))
-
     user = crud.authenticate_user(db, form_data.username, form_data.password)
 
     if not user:
