@@ -38,8 +38,14 @@ def verify_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload =  jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
+        exp = payload.get("exp")
         if email is None:
             raise credentials_exception
+        if exp is None:
+            raise credentials_exception
+        if datetime.utcnow() > datetime.fromtimestamp(exp):
+            raise credentials_exception
+
         token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception

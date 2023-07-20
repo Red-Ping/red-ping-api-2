@@ -29,12 +29,9 @@ db = next(get_db())
 def read_root():
     return {"Hello": "World"}
 
-
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
-
-
 
 #Requesting to ping a user
 @app.post("/ping_request")
