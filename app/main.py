@@ -1,12 +1,13 @@
-from fastapi import Depends, FastAPI, HTTPException, status
-
+from functools import lru_cache
 from typing import Annotated
+
+from fastapi import Depends, FastAPI, HTTPException, status
 
 from .db import crud, models, schemas
 from .db.database import SessionLocal, engine
-
 from .auth.access import router as access_router
-
+from .auth.access import setup_secret_key
+from . import config
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -14,6 +15,10 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.include_router(access_router)
 
+
+@lru_cache()
+def get_settings():
+    return config.Settings()
 
 # Dependency
 def get_db():
@@ -25,22 +30,16 @@ def get_db():
 
 db = next(get_db())
 
+setup_secret_key(get_settings().secret_key)
+@app.get("/info")
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def info(settings: Annotated[config.Settings, Depends(get_settings)]):
+    return {
+        "app_name": settings.app_name
+    }
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
-
-#Requesting to ping a user
-@app.post("/ping_request")
-def post_ping_request():
-    return {"status": "healthy"}
-
-#Get the current ping requests
-@app.get("/ping_request")
-def get_ping_request():
     return {"status": "healthy"}
 
 #Sends a ping to a user
