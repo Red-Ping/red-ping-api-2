@@ -6,14 +6,18 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from .db import crud, models, schemas
 from .db.database import SessionLocal, engine
 from .auth.access import router as access_router
+from .ping.request import router as ping_request_router
+
 from .auth.access import setup_secret_key
 from . import config
 
-models.Base.metadata.create_all(bind=engine)
+
 
 
 app = FastAPI()
+models.Base.metadata.create_all(bind=engine)
 app.include_router(access_router)
+app.include_router(ping_request_router)
 
 
 @lru_cache()

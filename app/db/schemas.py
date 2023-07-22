@@ -22,15 +22,18 @@ class UserBase(BaseModel):
     hashed_password: str
 
 
+'''
 class UserCreate(UserBase):
     pass
+'''
+
 
 
 class User(UserBase):
     id: int
-    #sender_id: int
-    #receiver_id: int
-    #sender: list[Ping] = []
-
     class Config:
         from_attributes = True
+
+class UserOut(User):
+    sent_ping_requests: list[User] = []
+    received_ping_requests: list[User] = []

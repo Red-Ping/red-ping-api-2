@@ -5,7 +5,7 @@ from . import models, schemas
 
 ph = PasswordHasher()
 
-def get_user_by_email(db: Session, email: str) -> schemas.UserCreate:
+def get_user_by_email(db: Session, email: str) -> schemas.UserOut:
     return db.query(models.User).filter(models.User.email == email).first()
 
 #Sets the password hash for a user
@@ -31,7 +31,6 @@ def authenticate_user(db: Session, email: str, password: str):
         set_password_hash_for_user(db, user.email, password)
     return user
 
-
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
@@ -42,6 +41,12 @@ def create_user(db: Session, email: str, password: str):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+#Adds a ping request to a user and the user that sent the request
+def add_ping_request(db: Session, user: schemas.UserOut, request_user: schemas.UserOut):
+    user.sent_ping_requests.append(request_user)
+    #request_user.received_ping_requests.append(user)
+    db.commit()
 
 #Creates a ping
 def create_ping(db: Session, ping: schemas.PingCreate, sender_id: int, receiver_id: int):
