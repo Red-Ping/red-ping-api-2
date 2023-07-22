@@ -100,5 +100,5 @@ def signup(email: str, password: str):
 
 #This requires auth
 @router.get("/get_email")
-def read_items(user: Annotated[User, Depends(verify_user)]):
+def get_email(user: Annotated[User, Depends(verify_user)]):
     return {"email": user.email}
