@@ -11,7 +11,8 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
 
-    #pings_sent = relationship("Ping", back_populates="sender")
+    #Users that have requested to ping this user
+    
 
 
 class Ping(Base):
@@ -21,5 +22,3 @@ class Ping(Base):
     sender_id = Column(Integer, ForeignKey("users.id"))
     receiver_id = Column(Integer, ForeignKey("users.id"))
     timestamp = Column(DateTime)
-
-    #sender = relationship("User", back_populates="pings_sent")
