@@ -15,6 +15,7 @@ def set_password_hash_for_user(db: Session, email: str,  password: str):
     db.commit()
     return user
 
+#Todo move this to auth
 #Check username and password
 def authenticate_user(db: Session, email: str, password: str):
     
