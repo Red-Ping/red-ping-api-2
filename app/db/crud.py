@@ -48,6 +48,12 @@ def add_ping_request(db: Session, user: schemas.UserOut, request_user: schemas.U
     #request_user.received_ping_requests.append(user)
     db.commit()
 
+#Gets the ping requests for a user with the email
+def get_ping_request(db: Session, email: str):
+    user = get_user_by_email(db, email)
+    user_emails = [user.email for user in user.received_ping_requests]
+    return user_emails
+
 #Creates a ping
 def create_ping(db: Session, ping: schemas.PingCreate, sender_id: int, receiver_id: int):
     db_ping = models.Ping(**ping.dict(), sender_id=sender_id, receiver_id=receiver_id)

@@ -51,9 +51,7 @@ def post_ping_request(user_email: str, user: Annotated[UserOut, Depends(verify_u
     return HTTPException(status_code=status.HTTP_200_OK)
 
 
-    
-
 #Get the current ping requests
 @router.get("/ping_request")
-def get_ping_request():
-    return 1
+def get_ping_request(user: Annotated[UserOut, Depends(verify_user)]):
+    return crud.get_ping_request(db, user.email)
