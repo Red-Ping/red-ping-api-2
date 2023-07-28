@@ -54,9 +54,21 @@ def get_ping_request(db: Session, email: str):
     user_emails = [user.email for user in user.received_ping_requests]
     return user_emails
 
+#Accepts a ping request
+def accept_ping_request(db: Session, user: schemas.UserOut, request_user: schemas.UserOut):
+    user.can_ping.append(request_user)
+    #request_user.can_be_pinged.append(user)
+    db.commit()
+
+#Declines a ping request
+def decline_ping_request(db: Session, user: schemas.UserOut, request_user: schemas.UserOut):
+    user.received_ping_requests.remove(request_user)
+    #request_user.sent_ping_requests.remove(user)
+    db.commit()
+
 #Creates a ping
 def create_ping(db: Session, ping: schemas.PingCreate, sender_id: int, receiver_id: int):
-    db_ping = models.Ping(**ping.dict(), sender_id=sender_id, receiver_id=receiver_id)
+    db_ping = models.Ping(**ping.model_dump(), sender_id=sender_id, receiver_id=receiver_id)
     db.add(db_ping)
     db.commit()
     db.refresh(db_ping)

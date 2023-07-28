@@ -31,7 +31,7 @@ def post_ping_request(user_email: str, user: Annotated[UserOut, Depends(verify_u
         print("User does not exist")
         raise invalid_user
 
-    #Different session user
+    #Same session user
     user = crud.get_user_by_email(db, user.email)
 
     #Check if we are the user

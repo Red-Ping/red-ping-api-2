@@ -14,6 +14,18 @@ class UserRequestsAssociation(Base):
             f"user_recv_request_id={self.user_recv_request_id})"
         )
 
+class UserCanPingAssociation(Base):
+    __tablename__ = "user_can_ping_association"
+
+    user_can_ping_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    user_recv_ping_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+
+    def __repr__(self):
+        return (
+            f"UserCanPingAssociation(user_can_ping_id={self.user_can_ping_id}, "
+            f"user_recv_ping_id={self.user_recv_ping_id})"
+        )
+
 
 class User(Base):
     __tablename__ = "users"
@@ -31,6 +43,16 @@ class User(Base):
         backref="received_ping_requests",
     )
     #received_ping_requests is a ref to sent_ping_requests
+
+    #Users that this user can ping (Many to Many)
+    can_ping = relationship(
+        "User",
+        secondary="user_can_ping_association",
+        primaryjoin=id == UserCanPingAssociation.user_recv_ping_id,
+        secondaryjoin=id == UserCanPingAssociation.user_can_ping_id,
+        backref="can_be_pinged",
+    )  
+    #can_be_pinged is a ref to can_ping
 
     def __repr__(self):
         return f"User(id={self.id}, email={self.email}), sent_ping_requests={self.sent_ping_requests}, received_ping_requests={self.received_ping_requests})"
