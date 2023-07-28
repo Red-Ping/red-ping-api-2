@@ -37,3 +37,5 @@ class User(UserBase):
 class UserOut(User):
     sent_ping_requests: list[User] = []
     received_ping_requests: list[User] = []
+    can_ping: list[User] = []
+    can_be_pinged: list[User] = []
