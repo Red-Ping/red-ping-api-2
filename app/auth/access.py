@@ -32,6 +32,10 @@ db = next(get_db())
 
 def setup_secret_key(secret_key):
     global SECRET_KEY
+
+    if secret_key is None:
+        raise ValueError("secret_key Environment Variable not set")
+
     SECRET_KEY = secret_key
 
 def verify_user(token: Annotated[str, Depends(oauth2_scheme)]):
