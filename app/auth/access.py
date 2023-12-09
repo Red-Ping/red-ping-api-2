@@ -32,6 +32,8 @@ db = next(get_db())
 
 def setup_secret_key(secret_key):
     global SECRET_KEY
+    if not secret_key:
+        raise ValueError("Secret key cannot be empty")
     SECRET_KEY = secret_key
 
 def verify_user(token: Annotated[str, Depends(oauth2_scheme)]):
