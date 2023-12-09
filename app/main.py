@@ -6,12 +6,10 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from .db import crud, models, schemas
 from .db.database import SessionLocal, engine
 from .auth.access import router as access_router
-from .ping.request import router as ping_request_router
+from .ping_request.request import router as ping_request_router
 
 from .auth.access import setup_secret_key
 from . import config
-
-
 
 
 app = FastAPI()
